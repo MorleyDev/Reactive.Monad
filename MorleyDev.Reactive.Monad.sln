@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6B19E68A-16D9-4B1D-B611-51BA0723E545}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MorleyDev.Reactive.Monad", "src\MorleyDev.Reactive.Monad\MorleyDev.Reactive.Monad.csproj", "{616D5029-FC8B-421A-9D22-F78931000235}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E17998E4-EE46-4469-92BD-1DAEA7A046D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorleyDev.Reactive.Monad.SampleTests", "test\MorleyDev.Reactive.Monad.SampleTests\MorleyDev.Reactive.Monad.SampleTests.csproj", "{D08EAF36-BACF-4A41-873A-1F941B2E30A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{616D5029-FC8B-421A-9D22-F78931000235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{616D5029-FC8B-421A-9D22-F78931000235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{616D5029-FC8B-421A-9D22-F78931000235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{616D5029-FC8B-421A-9D22-F78931000235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D08EAF36-BACF-4A41-873A-1F941B2E30A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D08EAF36-BACF-4A41-873A-1F941B2E30A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D08EAF36-BACF-4A41-873A-1F941B2E30A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D08EAF36-BACF-4A41-873A-1F941B2E30A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{616D5029-FC8B-421A-9D22-F78931000235} = {6B19E68A-16D9-4B1D-B611-51BA0723E545}
+		{D08EAF36-BACF-4A41-873A-1F941B2E30A8} = {E17998E4-EE46-4469-92BD-1DAEA7A046D3}
+	EndGlobalSection
+EndGlobal

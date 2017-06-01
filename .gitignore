@@ -1,0 +1,10 @@
+.vagrant
+.vscode
+.vs
+.idea
+bin/
+obj/
+project.lock.json
+*.xproj.user
+*.sln.DotSettings.user
+TestResult.xml
