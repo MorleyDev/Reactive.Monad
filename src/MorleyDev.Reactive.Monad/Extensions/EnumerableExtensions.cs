@@ -16,20 +16,9 @@ namespace MorleyDev.Reactive.Monad.Extensions
 			return LazyValue<T>.From(self.Single);
 		}
 
-		public static IEnumerable<T> Merge<T>(this IEnumerable<IEnumerable<T>> self)
+		public static IEnumerable<T> Merge<T, U>(this IEnumerable<U> self) where U : IEnumerable<T>
 		{
 			return self.SelectMany(inner => inner);
-		}
-
-		public static void ForEach<T>(this IEnumerable<T> self, Action<T> actor)
-		{
-			foreach (var value in self) actor(value);
-		}
-
-		public static void ForEach<T>(this IEnumerable<T> self, Action<T, int> actor)
-		{
-			var i = 0;
-			foreach (var value in self) actor(value, i++);
 		}
 	}
 }
