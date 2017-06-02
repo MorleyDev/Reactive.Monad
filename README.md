@@ -19,14 +19,14 @@ Instead, IO must be assumed and the size of the data set, without any internal k
 
 This library provides classes to explicitly encode the extra information in the return type
 * Synchronous
- * Maybe<T>: A data set of size 0 - 1
- * LazyValue<T>: Returns a data set of size 1
-  * Mostly intended for usage internally (As synchronous single non-io values will typically just be returned without a wrapping Monad)
+  * Maybe<T>: A data set of size 0 - 1
+  * LazyValue<T>: Returns a data set of size 1
+    * Mostly intended for usage internally (As synchronous single non-io values will typically just be returned without a wrapping Monad)
 
 * Asynchronous
- * IO<T>: Performs IO and returns a data set of size 1
- * MaybeIO<T>: Performs IO and returns a data set of size 0 - 1
- * ManyIO<T>: Performs IO and returns a data set of size 0 - N
+  * IO<T>: Performs IO and returns a data set of size 1
+  * MaybeIO<T>: Performs IO and returns a data set of size 0 - 1
+  * ManyIO<T>: Performs IO and returns a data set of size 0 - N
 
 The intent is to use these in situations where a non-descriptive IEnumerable or IObservable would otherwise be returned (or, with Maybe, a null).
 
