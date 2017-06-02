@@ -5,7 +5,7 @@ The MorleyDev Monad Library is built upon the idea that the .NET Standard provid
 * IEnumerable<T>: For synchronous pull-based monads
 * IObservable<T>: For asynchronous push-based monads
 
-These two monads allow for Synchronours and Asynchronous LINQ, allowing for pure functional code, but are not by themselves sufficient. Neither correctly encode in their names any additional restraints a developer needs.
+These two monads allow for Synchronous and Asynchronous LINQ, allowing for pure functional code, but are not by themselves sufficient. Neither correctly encode in their names any additional restraints a developer needs.
 
 * IEnumerable is a set of data from 0 - N
 * IObservable is a set of data from 0 - N
