@@ -30,6 +30,8 @@ namespace MorleyDev.Reactive.Monad
 			yield return _value();
 		}
 
+		public Lazy<T> ToLazy() => new Lazy<T>(_value);
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }
