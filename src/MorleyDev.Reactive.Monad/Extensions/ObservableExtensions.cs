@@ -8,6 +8,8 @@ namespace MorleyDev.Reactive.Monad.Extensions
 
 		public static ManyIO<T> ToManyIO<T>(this IObservable<T> self) => ManyIO<T>.From(self);
 
-		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<T> self) => MaybeIO.ToMaybeIO(self);
+		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<T> self) => MaybeIO.From(self);
+		
+		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<Maybe<T>> self) => MaybeIO.From(self);
 	}
 }

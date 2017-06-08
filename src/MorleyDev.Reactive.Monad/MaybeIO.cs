@@ -11,13 +11,11 @@ namespace MorleyDev.Reactive.Monad
 
 		public static MaybeIO<T> From<T>(IObservable<T> self) => self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None).ToIO();
 
+		public static MaybeIO<T> From<T>(IObservable<Maybe<T>> self) => self.ToIO();
+
 		public static MaybeIO<T> From<T>(Func<Maybe<T>> self) => IO.From(self);
 
 		public static MaybeIO<T> From<T>(Func<Task<Maybe<T>>> self) => IO.From(self);
-
-		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<T> self) => self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None).ToIO();
-
-		public static MaybeIO<T> ToMaybeIO<T>(this IO<Maybe<T>> self) => self;
 	}
 
 	/// <summary>
