@@ -51,5 +51,36 @@ namespace MorleyDev.Reactive.Monad
 		{
 			return _unsafeIO.SelectMany(maybe => maybe).Subscribe(observer);
 		}
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, MaybeIO<T> rhs) => lhs.Concat(rhs).Take(1).ToMaybeIO();
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, Maybe<T> rhs) => lhs.Concat(rhs.ToObservable()).Take(1).ToMaybeIO();
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static MaybeIO<T> Or(Maybe<T> lhs, MaybeIO<T> rhs) => lhs.ToObservable().Concat(rhs).Take(1).ToMaybeIO();
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static MaybeIO<T> Or(Maybe<T> lhs, IO<T> rhs) => lhs.ToObservable().Concat(rhs).Take(1).ToMaybeIO();
+
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, IO<T> rhs) => lhs.Concat(rhs).Take(1).ToMaybeIO();
 	}
 }

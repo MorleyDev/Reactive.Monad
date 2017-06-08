@@ -51,6 +51,12 @@ namespace MorleyDev.Reactive.Monad
 		/// <param name="value"></param>
 		public static implicit operator Maybe<T>(LazyValue<Maybe<T>> value) => new Maybe<T>(value.SelectMany(maybe => maybe));
 
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static Maybe<T> Or(Maybe<T> lhs, Maybe<T> rhs) => new Maybe<T>(lhs.Concat(rhs).Take(1));
+
 		private Maybe(IEnumerable<T> value)
 		{
 			_value = value;
