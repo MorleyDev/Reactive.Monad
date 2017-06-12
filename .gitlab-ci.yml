@@ -1,0 +1,15 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: microsoft/dotnet:1.1.1-sdk
+  script:
+    - dotnet restore
+    - dotnet build -c Release
+    - cd test/MorleyDev.Reactive.Monad.SampleTests
+    - dotnet test
+    - cd ../..
+    - dotnet pack -c Release
+    - cd src/MorleyDev.Reactive.Monad/bin/Release
+    - dotnet nuget push MorleyDev.Reactive.Monad-1.0.0.nupkg

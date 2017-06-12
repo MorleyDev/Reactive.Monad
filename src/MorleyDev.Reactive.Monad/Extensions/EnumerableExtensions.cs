@@ -14,10 +14,5 @@ namespace MorleyDev.Reactive.Monad.Extensions
 		{
 			return LazyValue<T>.From(self.Single);
 		}
-
-		public static IEnumerable<T> Merge<T, U>(this IEnumerable<U> self) where U : IEnumerable<T>
-		{
-			return self.SelectMany(inner => inner);
-		}
 	}
 }

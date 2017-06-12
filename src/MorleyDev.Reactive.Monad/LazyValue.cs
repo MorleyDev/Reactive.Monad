@@ -4,6 +4,13 @@ using System.Collections.Generic;
 
 namespace MorleyDev.Reactive.Monad
 {
+	public static class LazyValue
+	{
+		public static LazyValue<T> From<T>(Func<T> value) => LazyValue<T>.From(value);
+
+		public static LazyValue<T> From<T>(T value) => value;
+	}
+
 	/// <summary>
 	/// Lazy-evaluated. Does not cache so will constantly re-evaluate, mostly for internal use.
 	/// </summary>
