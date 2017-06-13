@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace MorleyDev.Reactive.Monad.SampleTests
+namespace MorleyDev.Reactive.Monad.UnitTests
 {
 	public class LazyTests
 	{

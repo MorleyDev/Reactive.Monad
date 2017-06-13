@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MorleyDev.Reactive.Monad.SampleTests
+namespace MorleyDev.Reactive.Monad.UnitTests
 {
 	public class EitherIOTests
 	{

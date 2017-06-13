@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MorleyDev.Reactive.Monad", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E17998E4-EE46-4469-92BD-1DAEA7A046D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorleyDev.Reactive.Monad.SampleTests", "test\MorleyDev.Reactive.Monad.SampleTests\MorleyDev.Reactive.Monad.SampleTests.csproj", "{D08EAF36-BACF-4A41-873A-1F941B2E30A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorleyDev.Reactive.Monad.UnitTests", "test\MorleyDev.Reactive.Monad.UnitTests\MorleyDev.Reactive.Monad.UnitTests.csproj", "{D08EAF36-BACF-4A41-873A-1F941B2E30A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{735C347F-3449-4A33-A096-5EF1682DE538}"
 	ProjectSection(SolutionItems) = preProject

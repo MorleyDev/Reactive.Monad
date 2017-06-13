@@ -7,7 +7,7 @@ build:
   script:
     - dotnet restore
     - dotnet build -c Release
-    - cd test/MorleyDev.Reactive.Monad.SampleTests
+    - cd test/MorleyDev.Reactive.Monad.UnitTests
     - dotnet test
     - cd ../..
     - dotnet pack -c Release

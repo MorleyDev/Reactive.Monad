@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using Xunit;
 
-namespace MorleyDev.Reactive.Monad.SampleTests
+namespace MorleyDev.Reactive.Monad.UnitTests
 {
 	public class EitherTests
 	{
