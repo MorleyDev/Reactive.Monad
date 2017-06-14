@@ -62,5 +62,27 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			right.Match(f => Maybe.Just(0.0), r => Maybe.Just(r * 2)).Single().Should().Be(50.0);
 			right.Match(f => Maybe.Just(20), r => Maybe.None).Count().Should().Be(0);
 		}
+
+		[Fact]
+		public void MatchMapTest()
+		{
+			Either<int, int> sourceL = Either.Left(10);
+			Either<int, int> sourceR = Either.Right(10);
+
+			sourceL.MatchMap(tw => tw.ToString(), _ => _ * 20).Lhs().Single().Should().Be("10");
+			sourceR.MatchMap(tw => tw.ToString(), _ => _ * 20).Rhs().Single().Should().Be(200);
+		}
+
+		[Fact]
+		public void MatchManyTest()
+		{
+			Either<int, int> sourceL = Either.Left(10);
+			Either<int, int> sourceR = Either.Right(10);
+			sourceL.MatchMany<string, int>(tw => Either.Right(tw * 10), tw => Either.Left(tw .ToString())).Rhs().Single().Should().Be(100);
+			sourceL.MatchMany<string, int>(tw => Either.Right(tw * 10), tw => Either.Left(tw.ToString())).Lhs().Should().BeEmpty();
+
+			sourceR.MatchMany<string, int>(tw => Either.Right(tw * 10), tw => Either.Left(tw.ToString())).Lhs().Single().Should().Be("10");
+			sourceR.MatchMany<string, int>(tw => Either.Right(tw * 10), tw => Either.Left(tw.ToString())).Rhs().Should().BeEmpty();
+		}
 	}
 }
