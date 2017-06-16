@@ -49,7 +49,7 @@ namespace MorleyDev.Reactive.Monad
 		/// Maybe is Lazy so this allows for a lazy maybe
 		/// </summary>
 		/// <param name="value"></param>
-		public static implicit operator Maybe<T>(LazyValue<Maybe<T>> value) => new Maybe<T>(value.SelectMany(maybe => maybe));
+		public static implicit operator Maybe<T>(LazyValue<Maybe<T>> value) => new Maybe<T>(value.AsEnumerable().SelectMany(maybe => maybe));
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
@@ -57,10 +57,14 @@ namespace MorleyDev.Reactive.Monad
 		/// <returns></returns>
 		public static Maybe<T> Or(Maybe<T> lhs, Maybe<T> rhs) => new Maybe<T>(lhs.Concat(rhs).Take(1));
 
+		public static Maybe<T> From(IEnumerable<T> self) => new Maybe<T>(self);
+
 		private Maybe(IEnumerable<T> value)
 		{
 			_value = value;
 		}
+
+		public IEnumerable<T> AsEnumerable() => _value;
 
 		public IEnumerator<T> GetEnumerator()
 		{

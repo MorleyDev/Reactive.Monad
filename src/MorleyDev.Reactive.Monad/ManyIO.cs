@@ -35,6 +35,8 @@ namespace MorleyDev.Reactive.Monad
 			_observableStream = observableStream;
 		}
 
+		public IObservable<T> AsObservable() => _observableStream;
+
 		public static ManyIO<T> From(IObservable<T> source) => new ManyIO<T>(source);
 
 		public IDisposable Subscribe(IObserver<T> observer) => _observableStream.Subscribe(observer);

@@ -40,5 +40,7 @@ namespace MorleyDev.Reactive.Monad
 		public Lazy<T> ToLazy() => new Lazy<T>(_value);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		public IEnumerable<T> AsEnumerable() => this;
 	}
 }

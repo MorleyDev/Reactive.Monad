@@ -45,9 +45,11 @@ namespace MorleyDev.Reactive.Monad
 
 		public static MaybeIO<T> From(IO<Maybe<T>> unsafeIO) => new MaybeIO<T>(unsafeIO);
 
+		public IObservable<T> AsObservable() => this;
+
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
-			return _unsafeIO.SelectMany(maybe => maybe).Subscribe(observer);
+			return _unsafeIO.AsObservable().SelectMany(maybe => maybe).Subscribe(observer);
 		}
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>

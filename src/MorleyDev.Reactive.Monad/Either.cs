@@ -12,8 +12,8 @@ namespace MorleyDev.Reactive.Monad
 
 		private Either(Maybe<Either<L, R>> left, Maybe<Either<L, R>> right)
 		{
-			_left = left.SelectMany(d => d._left).Concat(right.SelectMany(d => d._left)).ToMaybe();
-			_right = left.SelectMany(d => d._right).Concat(right.SelectMany(d => d._right)).ToMaybe();
+			_left = left.AsEnumerable().SelectMany(d => d._left).Concat(right.AsEnumerable().SelectMany(d => d._left)).ToMaybe();
+			_right = left.AsEnumerable().SelectMany(d => d._right).Concat(right.AsEnumerable().SelectMany(d => d._right)).ToMaybe();
 		}
 
 		private Either(Maybe<L> left, Maybe<R> right)
@@ -41,16 +41,16 @@ namespace MorleyDev.Reactive.Monad
 		public Maybe<R> Rhs() => _right;
 
 		public LazyValue<V> Match<V>(Func<L, V> lhs, Func<R, V> rhs)
-			=> _left.Select(lhs).Concat(_right.Select(rhs)).ToLazyValue();
+			=> _left.AsEnumerable().Select(lhs).Concat(_right.AsEnumerable().Select(rhs)).ToLazyValue();
 
 		public Maybe<V> Match<V>(Func<L, Maybe<V>> lhs, Func<R, Maybe<V>> rhs)
-			=> _left.SelectMany(lhs).Concat(_right.SelectMany(rhs)).ToMaybe();
+			=> _left.AsEnumerable().SelectMany(lhs).Concat(_right.AsEnumerable().SelectMany(rhs)).ToMaybe();
 
 		public Either<VL, VR> MatchMany<VL, VR>(Func<L, Either<VL, VR>> lhs, Func<R, Either<VL, VR>> rhs)
-			=> new Either<VL, VR>(_left.Select(lhs).ToMaybe(), _right.Select(rhs).ToMaybe());
+			=> new Either<VL, VR>(_left.AsEnumerable().Select(lhs).ToMaybe(), _right.AsEnumerable().Select(rhs).ToMaybe());
 
 		public Either<VL, VR> MatchMap<VL, VR>(Func<L, VL> lhs, Func<R, VR> rhs)
-			=> new Either<VL, VR>(_left.Select(lhs).ToMaybe(), _right.Select(rhs).ToMaybe());
+			=> new Either<VL, VR>(_left.AsEnumerable().Select(lhs).ToMaybe(), _right.AsEnumerable().Select(rhs).ToMaybe());
 	}
 
 	public static class Either

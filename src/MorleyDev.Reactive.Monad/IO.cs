@@ -60,7 +60,7 @@ namespace MorleyDev.Reactive.Monad
 
 		public Task<T> RunUnsafeIO() => _unsafeIO.ToTask();
 
-		public IObservable<T> Observable() => _unsafeIO;
+		public IObservable<T> AsObservable() => _unsafeIO;
 
 		public IDisposable Subscribe(IObserver<T> observer)
 		{

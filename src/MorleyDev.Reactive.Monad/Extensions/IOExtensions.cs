@@ -14,7 +14,7 @@ namespace MorleyDev.Reactive.Monad.Extensions
 		/// <typeparam name="U"></typeparam>
 		/// <param name="self"></param>
 		/// <returns></returns>
-		public static ManyIO<T> Merge<T>(this IO<IEnumerable<T>> self) => self.Select(s => s.ToObservable()).Merge().ToManyIO();
+		public static ManyIO<T> Merge<T>(this IO<IEnumerable<T>> self) => self.AsObservable().Select(s => s.ToObservable()).Merge().ToManyIO();
 
 		/// <summary>
 		/// Merge an IO of an Enumerable into a ManyIO
@@ -23,7 +23,7 @@ namespace MorleyDev.Reactive.Monad.Extensions
 		/// <typeparam name="U"></typeparam>
 		/// <param name="self"></param>
 		/// <returns></returns>
-		public static ManyIO<T> Concat<T>(this IO<IEnumerable<T>> self) => self.Select(s => s.ToObservable()).Concat().ToManyIO();
+		public static ManyIO<T> Concat<T>(this IO<IEnumerable<T>> self) => self.AsObservable().Select(s => s.ToObservable()).Concat().ToManyIO();
 	}
 
 	public static class IOExtensionsNestedObservable
@@ -44,6 +44,6 @@ namespace MorleyDev.Reactive.Monad.Extensions
 		/// <typeparam name="U"></typeparam>
 		/// <param name="self"></param>
 		/// <returns></returns>
-		public static ManyIO<T> Concat<T>(this IO<IObservable<T>> self) => self.Select(s => (IObservable<T>)s).Concat().ToManyIO();
+		public static ManyIO<T> Concat<T>(this IO<IObservable<T>> self) => self.AsObservable().Select(s => (IObservable<T>)s).Concat().ToManyIO();
 	}
 }
