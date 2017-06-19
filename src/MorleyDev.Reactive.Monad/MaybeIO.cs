@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using MorleyDev.Reactive.Monad.Extensions;
+using System.Reactive;
 
 namespace MorleyDev.Reactive.Monad
 {
@@ -15,7 +16,10 @@ namespace MorleyDev.Reactive.Monad
 
 		public static MaybeIO<T> From<T>(Func<Maybe<T>> self) => IO.From(self);
 
+		public static MaybeIO<Unit> From<T>(Func<MaybeNone> self) => IO.From(() => (Maybe<Unit>)self());
+
 		public static MaybeIO<T> From<T>(Func<Task<Maybe<T>>> self) => IO.From(self);
+
 	}
 
 	/// <summary>
@@ -30,6 +34,8 @@ namespace MorleyDev.Reactive.Monad
 		{
 			_unsafeIO = unsafeIO;
 		}
+
+		public static MaybeIO<T> None => new MaybeIO<T>(IO.From(Observable.Return(Maybe<T>.None)));
 
 		/// <summary>
 		/// MaybeIO is equivalent to IO<Maybe>.Merge() and Vice-Versa

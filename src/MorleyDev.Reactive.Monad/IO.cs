@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
@@ -8,11 +9,18 @@ namespace MorleyDev.Reactive.Monad
 	public static class IO
 	{
 		/// <summary>
-		/// Wraps an IO Action into an synchronous IO
+		/// Wraps an IO Function into an synchronous IO
 		/// </summary>
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>
 		public static IO<T> From<T>(Func<T> unsafeIO) => From(Observable.Defer(() => Observable.Return(unsafeIO())));
+
+		/// <summary>
+		/// Wraps an IO Function into an synchronous IO
+		/// </summary>
+		/// <param name="unsafeIO"></param>
+		/// <returns></returns>
+		public static IO<Unit> From(Action unsafeIO) => From(() => { unsafeIO(); return Unit.Default; });
 
 		/// <summary>
 		/// Wraps an Asynchronous Action into an asynchronous IO
@@ -41,6 +49,26 @@ namespace MorleyDev.Reactive.Monad
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>
 		public static IO<T> Run<T>(Func<T> unsafeIO) => From(() => Task.Run(unsafeIO));
+
+		/// <summary>
+		/// Runs a synchronous action via Task.Run that returns a void
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public static IO<Unit> Run(Action action) => Run(() => {
+			action();
+			return Unit.Default;
+		});
+
+		/// <summary>
+		/// Runs a synchronous action via Task.Run that returns a void
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public static IO<Unit> From(Func<Task> action) => From(async () => {
+			await action();
+			return Unit.Default;
+		});
 	}
 
 	/// <summary>
