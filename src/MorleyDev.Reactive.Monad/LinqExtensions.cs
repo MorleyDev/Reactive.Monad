@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -51,6 +52,8 @@ namespace MorleyDev.Reactive.Monad
 		public static IO<T> SingleAsync<T>(this ManyIO<T> self) => IO.From(self.AsObservable().SingleAsync());
 		public static IO<bool> IsEmpty<T>(this ManyIO<T> self) => IO.From(self.AsObservable().IsEmpty());
 		public static ManyIO<T> DefaultIfEmpty<T>(this ManyIO<T> self, T defaultValue = default(T)) => ManyIO.From(self.AsObservable().DefaultIfEmpty(defaultValue));
+		public static IO<T[]> ToArray<T>(this ManyIO<T> self) => IO.From(self.AsObservable().ToArray());
+		public static IO<IList<T>> ToList<T>(this ManyIO<T> self) => IO.From(self.AsObservable().ToList());
 
 		public static IO<T> Do<T>(this IO<T> self, Action<T> actor) => IO.From(self.AsObservable().Do(actor));
 		public static ManyIO<T> Do<T>(this ManyIO<T> self, Action<T> actor) => ManyIO.From(self.AsObservable().Do(actor));
