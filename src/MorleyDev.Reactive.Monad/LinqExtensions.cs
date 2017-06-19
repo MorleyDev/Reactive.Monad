@@ -22,6 +22,7 @@ namespace MorleyDev.Reactive.Monad
 		public static IO<U> Select<U, T>(this IO<T> self, Func<T, U> mapper) => IO<U>.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this IO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
 		public static IO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<U>> mapper) => IO<U>.From(self.AsObservable().SelectMany(mapper));
+		public static IO<U> SelectMany<U, T>(this IO<T> self, Func<T, LazyValue<U>> mapper) => IO<U>.From(self.AsObservable().SelectMany(mapper));
 		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, Maybe<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(f => mapper(f)));
 		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, MaybeIO<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
 		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<Maybe<U>>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));

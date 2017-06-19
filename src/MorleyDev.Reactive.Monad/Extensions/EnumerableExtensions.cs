@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace MorleyDev.Reactive.Monad.Extensions
 {
@@ -14,5 +15,7 @@ namespace MorleyDev.Reactive.Monad.Extensions
 		{
 			return LazyValue<T>.From(self.Single);
 		}
+
+		public static ManyIO<T> ToManyIO<T>(this IEnumerable<T> self) => ManyIO.From(self.ToObservable());
 	}
 }
