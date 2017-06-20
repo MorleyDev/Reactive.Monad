@@ -45,11 +45,6 @@ namespace MorleyDev.Reactive.Monad
 			return AsObservable().SelectMany(either => either.Match(lhs, rhs).Merge()).ToIO();
 		}
 
-		public ManyIO<U> Match<U>(Func<L, ManyIO<U>> lhs, Func<R, ManyIO<U>> rhs)
-		{
-			return AsObservable().SelectMany(either => either.Match(lhs, rhs).Merge()).ToManyIO();
-		}
-
 		public MaybeIO<U> Match<U>(Func<L, MaybeIO<U>> lhs, Func<R, MaybeIO<U>> rhs)
 		{
 			return AsObservable().SelectMany(either => either.Match(lhs, rhs).Merge()).ToMaybeIO();

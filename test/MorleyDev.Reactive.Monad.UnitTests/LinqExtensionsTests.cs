@@ -24,7 +24,7 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await io.SelectMany(v => (Maybe<int>)Maybe.None).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => IO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => MaybeIO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
-			(await io.SelectMany(v => ManyIO.From(new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).ToList()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
+			(await io.SelectMany(v => new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable()).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
 		}
 
 		[Fact]
@@ -54,8 +54,8 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await some.SelectMany(v => MaybeIO.From(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
 			(await some.SelectMany(v => MaybeIO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 
-			(await some.SelectMany(v => ManyIO.From(new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).ToList()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
-			(await none.SelectMany(v => ManyIO.From(new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).IsEmpty()).Should().Be(true);
+			(await some.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
+			(await none.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).IsEmptyIO()).Should().Be(true);
 
 			(await some.DefaultIfEmpty(25.5)).Should().Be(1000.0);
 			(await none.DefaultIfEmpty(25.5)).Should().Be(25.5);

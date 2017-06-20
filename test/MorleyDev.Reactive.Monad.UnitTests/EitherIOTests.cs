@@ -29,14 +29,14 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await left.Match(x => Observable.Return(x * 2.5), y => Observable.Return(y * 2))).Should().Be(25.0);
 			(await left.Match(x => IO.From(() => x * 2.5), y => IO.From(() => y * 2))).Should().Be(25.0);
 			(await left.Match(x => MaybeIO.From(() => Maybe.Just(x * 2.5)), y => MaybeIO.From(() => Maybe.Just(y * 2)))).Should().Be(25.0);
-			(await left.Match(x => ManyIO.From(() => Observable.Return(x * 2.5)), y => ManyIO.From(() => Observable.Return(y * 2)))).Should().Be(25.0);
+			(await left.Match(x => Observable.Return(x * 2.5), y => Observable.Return(y * 2))).Should().Be(25.0);
 
 			EitherIO<int, double> right = IO.From(() => Either.Right(25.0));
 			(await right.Match(x => x * 2.5, y => y * 2)).Should().Be(50.0);
 			(await right.Match(x => Observable.Return(x * 2.5), y => Observable.Return(y * 2))).Should().Be(50.0);
 			(await right.Match(x => IO.From(() => x * 2.5), y => IO.From(() => y * 2))).Should().Be(50.0);
 			(await right.Match(x => MaybeIO.From(() => Maybe.Just(x * 2.5)), y => MaybeIO.From(() => Maybe.Just(y * 2)))).Should().Be(50.0);
-			(await right.Match(x => ManyIO.From(() => Observable.Return(x * 2.5)), y => ManyIO.From(() => Observable.Return(y * 2)))).Should().Be(50.0);
+			(await right.Match(x => Observable.Return(x * 2.5), y => Observable.Return(y * 2))).Should().Be(50.0);
 		}
 
 		[Fact]

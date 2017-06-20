@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MorleyDev.Reactive.Monad;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 
-namespace MorleyDev.Reactive.Monad
+namespace System.Reactive.Linq
 {
 	public static class LinqExtensions
 	{
@@ -25,9 +24,8 @@ namespace MorleyDev.Reactive.Monad
 		public static IO<U> SelectMany<U, T>(this IO<T> self, Func<T, LazyValue<U>> mapper) => IO<U>.From(self.AsObservable().SelectMany(mapper));
 		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, Maybe<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(f => mapper(f)));
 		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, MaybeIO<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
-		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<Maybe<U>>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this IO<T> self, Func<T, ManyIO<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static IO<bool> IsEmpty<T>(this IO<T> self) => IO.From(Observable.Return(false));
+		public static MaybeIO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<Maybe<U>>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(value => mapper(value).AsObservable().SelectMany(maybe => maybe)));
+		public static IO<bool> IsEmpty<T>(this IO<T> self) => MorleyDev.Reactive.Monad.IO.From(Observable.Return(false));
 
 		public static MaybeIO<U> Select<U, T>(this MaybeIO<T> self, Func<T, U> mapper) => MaybeIO.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this MaybeIO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
@@ -35,39 +33,23 @@ namespace MorleyDev.Reactive.Monad
 		public static MaybeIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, Maybe<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
 		public static MaybeIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, LazyValue<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
 		public static MaybeIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, MaybeIO<U>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
-		public static MaybeIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, IO<Maybe<U>>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, ManyIO<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static IO<bool> IsEmpty<T>(this MaybeIO<T> self) => IO.From(self.AsObservable().IsEmpty());
-		public static IO<T> DefaultIfEmpty<T>(this MaybeIO<T> self, T defaultValue = default(T)) => IO.From(self.AsObservable().DefaultIfEmpty(defaultValue));
+		public static MaybeIO<U> SelectMany<U, T>(this MaybeIO<T> self, Func<T, IO<Maybe<U>>> mapper) => MaybeIO.From(self.AsObservable().SelectMany(value => mapper(value).AsObservable().SelectMany(maybe => maybe)));
+		public static IO<bool> IsEmpty<T>(this MaybeIO<T> self) => MorleyDev.Reactive.Monad.IO.From(self.AsObservable().IsEmpty());
+		public static IO<T> DefaultIfEmpty<T>(this MaybeIO<T> self, T defaultValue = default(T)) => MorleyDev.Reactive.Monad.IO.From(self.AsObservable().DefaultIfEmpty(defaultValue));
 
+		public static IObservable<U> SelectMany<U, T>(this IObservable<T> self, Func<T, IObservable<Maybe<U>>> mapper) => Observable.AsObservable(self).SelectMany(value => mapper(value).SelectMany(maybe => maybe));
+		public static MaybeIO<T> FirstOrNone<T>(this IObservable<T> self) => MaybeIO.From(Observable.AsObservable(self).Take(1));
+		public static IO<T> SingleIO<T>(this IObservable<T> self) => MorleyDev.Reactive.Monad.IO.From(Observable.AsObservable(self).SingleAsync());
+		public static IO<bool> IsEmptyIO<T>(this IObservable<T> self) => MorleyDev.Reactive.Monad.IO.From(Observable.AsObservable(self).IsEmpty());
+		public static IO<T[]> ToArrayIO<T>(this IObservable<T> self) => MorleyDev.Reactive.Monad.IO.From(Observable.AsObservable(self).ToArray());
+		public static IO<IList<T>> ToListIO<T>(this IObservable<T> self) => MorleyDev.Reactive.Monad.IO.From(Observable.AsObservable(self).ToList());
 
-		public static ManyIO<U> Select<U, T>(this ManyIO<T> self, Func<T, U> mapper) => ManyIO.From(self.AsObservable().Select(mapper));
-		public static ManyIO<T> Where<T>(this ManyIO<T> self, Func<T, bool> predicate) => ManyIO.From(self.AsObservable().Where(predicate));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, IO<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, ManyIO<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, Maybe<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, MaybeIO<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, IO<Maybe<U>>> mapper) => ManyIO.From(self.AsObservable().SelectMany(value => mapper(value).SelectMany(v => v)));
-		public static ManyIO<U> SelectMany<U, T>(this ManyIO<T> self, Func<T, LazyValue<U>> mapper) => ManyIO.From(self.AsObservable().SelectMany(mapper));
-		public static MaybeIO<T> FirstAsync<T>(this ManyIO<T> self) => MaybeIO.From(self.AsObservable().Take(1));
-		public static IO<T> SingleAsync<T>(this ManyIO<T> self) => IO.From(self.AsObservable().SingleAsync());
-		public static IO<bool> IsEmpty<T>(this ManyIO<T> self) => IO.From(self.AsObservable().IsEmpty());
-		public static ManyIO<T> DefaultIfEmpty<T>(this ManyIO<T> self, T defaultValue = default(T)) => ManyIO.From(self.AsObservable().DefaultIfEmpty(defaultValue));
-		public static IO<T[]> ToArray<T>(this ManyIO<T> self) => IO.From(self.AsObservable().ToArray());
-		public static IO<IList<T>> ToList<T>(this ManyIO<T> self) => IO.From(self.AsObservable().ToList());
-
-		public static IO<T> Do<T>(this IO<T> self, Action<T> actor) => IO.From(self.AsObservable().Do(actor));
-		public static ManyIO<T> Do<T>(this ManyIO<T> self, Action<T> actor) => ManyIO.From(self.AsObservable().Do(actor));
+		public static IO<T> Do<T>(this IO<T> self, Action<T> actor) => MorleyDev.Reactive.Monad.IO.From(self.AsObservable().Do(actor));
 		public static MaybeIO<T> Do<T>(this MaybeIO<T> self, Action<T> actor) => MaybeIO.From(self.AsObservable().Do(actor));
 
 		public static MaybeIO<T> Catch<T, TException>(this MaybeIO<T> self, Func<TException, IO<T>> catcher) where TException : Exception => MaybeIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
 		public static MaybeIO<T> Catch<T, TException>(this MaybeIO<T> self, Func<TException, MaybeIO<T>> catcher) where TException : Exception => MaybeIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static ManyIO<T> Catch<T, TException>(this MaybeIO<T> self, Func<TException, ManyIO<T>> catcher) where TException : Exception => ManyIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static IO<T> Catch<T, TException>(this IO<T> self, Func<TException, IO<T>> catcher) where TException : Exception => IO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
+		public static IO<T> Catch<T, TException>(this IO<T> self, Func<TException, IO<T>> catcher) where TException : Exception => MorleyDev.Reactive.Monad.IO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
 		public static MaybeIO<T> Catch<T, TException>(this IO<T> self, Func<TException, MaybeIO<T>> catcher) where TException : Exception => MaybeIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static ManyIO<T> Catch<T, TException>(this IO<T> self, Func<TException, ManyIO<T>> catcher) where TException : Exception => ManyIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static ManyIO<T> Catch<T, TException>(this ManyIO<T> self, Func<TException, IO<T>> catcher) where TException : Exception => ManyIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static ManyIO<T> Catch<T, TException>(this ManyIO<T> self, Func<TException, MaybeIO<T>> catcher) where TException : Exception => ManyIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
-		public static ManyIO<T> Catch<T, TException>(this ManyIO<T> self, Func<TException, ManyIO<T>> catcher) where TException : Exception => ManyIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
 	}
 }
