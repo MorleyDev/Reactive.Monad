@@ -1,7 +1,6 @@
 using MorleyDev.Reactive.Monad.Extensions;
 using System;
 using System.Linq;
-using System.Reactive.Linq;
 
 namespace MorleyDev.Reactive.Monad
 {

@@ -52,18 +52,18 @@ namespace System.Reactive.Linq
 		public static IO<T> Catch<T, TException>(this IO<T> self, Func<TException, IO<T>> catcher) where TException : Exception => MorleyDev.Reactive.Monad.IO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
 		public static MaybeIO<T> Catch<T, TException>(this IO<T> self, Func<TException, MaybeIO<T>> catcher) where TException : Exception => MaybeIO.From(self.AsObservable().Catch((TException ex) => catcher(ex)));
 
-		public static IO<U> Zip<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this IO<T1> lhs, IObservable<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, IObservable<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
-		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs, mapper));
+		public static IO<U> Zip<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this IO<T1> lhs, IObservable<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this MaybeIO<T1> lhs, IObservable<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
 
-		public static IO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().CombineLatest(rhs, mapper));
-		public static MaybeIO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs, mapper));
-		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs, mapper));
-		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs, mapper));
+		public static IO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
+		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 	}
 }
