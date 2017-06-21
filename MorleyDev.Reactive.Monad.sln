@@ -13,7 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorleyDev.Reactive.Monad.Un
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{735C347F-3449-4A33-A096-5EF1682DE538}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		.gitlab-ci.yml = .gitlab-ci.yml
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

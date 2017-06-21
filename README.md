@@ -26,9 +26,11 @@ This library provides classes to explicitly encode the extra information in the 
 * Asynchronous
   * IO<T>: Performs IO and returns a data set of size 1
   * MaybeIO<T>: Performs IO and returns a data set of size 0 - 1
-  * ManyIO<T>: Performs IO and returns a data set of size 0 - N
 
 The intent is to use these in situations where a non-descriptive IEnumerable or IObservable would otherwise be returned (or, with Maybe, a null).
+This allows IEnumerable and IObservable to always be treated as sets of data from 0 - N, whilst allowing for leaner code that leverages the LINQ/RX syntax for single/optional value results.
+
+Contact-preserving LINQ implementations are also provided, allowing for IO/MaybeIO/Maybe/LazyValue to flow downwards through a LINQ statement.
 
 This library also provides classes built on top of the guarantees provided by these primitives:
 * Either<L, R>

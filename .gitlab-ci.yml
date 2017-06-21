@@ -9,7 +9,3 @@ build:
     - dotnet build -c Release
     - cd test/MorleyDev.Reactive.Monad.UnitTests
     - dotnet test
-    - cd ../..
-    - dotnet pack -c Release
-    - cd src/MorleyDev.Reactive.Monad/bin/Release
-    - dotnet nuget push MorleyDev.Reactive.Monad-1.0.0.nupkg

@@ -1,8 +1,7 @@
 ﻿using MorleyDev.Reactive.Monad;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace System.Reactive.Linq
+namespace System.Linq
 {
 	public static class LinqExtensions
 	{
@@ -17,7 +16,13 @@ namespace System.Reactive.Linq
 		public static LazyValue<U> SelectMany<U, T>(this LazyValue<T> self, Func<T, LazyValue<U>> mapper) => LazyValue<U>.From(self.AsEnumerable().SelectMany(mapper).Single);
 		public static Maybe<U> SelectMany<U, T>(this LazyValue<T> self, Func<T, Maybe<U>> mapper) => Maybe<U>.From(self.AsEnumerable().SelectMany(mapper));
 		public static LazyValue<U> DefaultIfEmpty<U, T>(this LazyValue<T> self, Func<T, Maybe<U>> mapper) => LazyValue<U>.From(self.AsEnumerable().SelectMany(mapper).Single);
+	}
+}
 
+namespace System.Reactive.Linq
+{
+	public static class LinqExtensions
+	{
 		public static IO<U> Select<U, T>(this IO<T> self, Func<T, U> mapper) => IO<U>.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this IO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
 		public static IO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<U>> mapper) => IO<U>.From(self.AsObservable().SelectMany(mapper));
