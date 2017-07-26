@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace System.Linq
 {
-	public static class LinqExtensions
+	public static class Monad
 	{
 		public static Maybe<U> Select<U, T>(this Maybe<T> self, Func<T, U> mapper) => Maybe<U>.From(self.AsEnumerable().Select(mapper));
 		public static Maybe<T> Where<T>(this Maybe<T> self, Func<T, bool> predicate) => Maybe<T>.From(self.AsEnumerable().Where(predicate));
@@ -16,12 +16,15 @@ namespace System.Linq
 		public static LazyValue<U> SelectMany<U, T>(this LazyValue<T> self, Func<T, LazyValue<U>> mapper) => LazyValue<U>.From(self.AsEnumerable().SelectMany(mapper).Single);
 		public static Maybe<U> SelectMany<U, T>(this LazyValue<T> self, Func<T, Maybe<U>> mapper) => Maybe<U>.From(self.AsEnumerable().SelectMany(mapper));
 		public static LazyValue<U> DefaultIfEmpty<U, T>(this LazyValue<T> self, Func<T, Maybe<U>> mapper) => LazyValue<U>.From(self.AsEnumerable().SelectMany(mapper).Single);
+
+		public static LazyValue<T> SingleLazy<T>(this IEnumerable<T> self) => LazyValue<T>.From(self.Single);
+		public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> self) => Maybe<T>.From(self.Take(1));
 	}
 }
 
 namespace System.Reactive.Linq
 {
-	public static class LinqExtensions
+	public static class Monad
 	{
 		public static IO<U> Select<U, T>(this IO<T> self, Func<T, U> mapper) => IO<U>.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this IO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
@@ -66,9 +69,23 @@ namespace System.Reactive.Linq
 		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
 
+		public static IO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l,r) => (l,r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IObservable<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+
 		public static IO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
+
+		public static IO<(T1, T2)> CombineLatest<T1, T2>(this IO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
 	}
 }

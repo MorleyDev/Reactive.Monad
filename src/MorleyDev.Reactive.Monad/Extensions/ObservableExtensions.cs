@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 
 namespace MorleyDev.Reactive.Monad.Extensions
 {
@@ -8,6 +9,6 @@ namespace MorleyDev.Reactive.Monad.Extensions
 
 		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<T> self) => MaybeIO.From(self);
 		
-		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<Maybe<T>> self) => MaybeIO.From(self);
+		public static MaybeIO<T> ToMaybeIO<T>(this IObservable<Maybe<T>> self) => MaybeIO.From(self.SelectMany(s => s));
 	}
 }

@@ -9,32 +9,32 @@ namespace MorleyDev.Reactive.Monad
 	public static class IO
 	{
 		/// <summary>
-		/// Wraps an IO Function into an synchronous IO
-		/// </summary>
-		/// <param name="unsafeIO"></param>
-		/// <returns></returns>
-		public static IO<T> From<T>(Func<T> unsafeIO) => From(Observable.Defer(() => Observable.Return(unsafeIO())));
-
-		/// <summary>
-		/// Wraps an IO Function into an synchronous IO
-		/// </summary>
-		/// <param name="unsafeIO"></param>
-		/// <returns></returns>
-		public static IO<Unit> From(Action unsafeIO) => From(() => { unsafeIO(); return Unit.Default; });
-
-		/// <summary>
 		/// Wraps an Asynchronous Action into an asynchronous IO
 		/// </summary>
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>
-		public static IO<T> From<T>(Func<Task<T>> unsafeIO) => From(Observable.Defer(() => unsafeIO().ToObservable()));
+		public static IO<T> Defer<T>(Func<Task<T>> unsafeIO) => IO<T>.From(Observable.Defer(() => unsafeIO().ToObservable()));
 
 		/// <summary>
 		/// Wraps an Asynchronous observable into an asynchronous IO
 		/// </summary>
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>
-		public static IO<T> From<T>(Func<IObservable<T>> unsafeIO) => From(Observable.Defer(unsafeIO));
+		public static IO<T> Defer<T>(Func<IObservable<T>> unsafeIO) => IO<T>.From(Observable.Defer(unsafeIO));
+
+		/// <summary>
+		/// Runs a synchronous IO async via Task.Run and wraps the result in an IO
+		/// </summary>
+		/// <param name="unsafeIO"></param>
+		/// <returns></returns>
+		public static IO<T> Run<T>(Func<T> unsafeIO) => IO<T>.From(Observable.Defer(() => Task.Run(unsafeIO).ToObservable()));
+
+		/// <summary>
+		/// Runs a synchronous action via Task.Run that returns a void
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		public static IO<Unit> Run(Action action) => IO<Unit>.From(Observable.Defer(() => Task.Run(action).ToObservable()));
 
 		/// <summary>
 		/// Wraps an Asynchronous observable into an asynchronous IO
@@ -44,31 +44,12 @@ namespace MorleyDev.Reactive.Monad
 		public static IO<T> From<T>(IObservable<T> unsafeIO) => IO<T>.From(unsafeIO);
 
 		/// <summary>
-		/// Runs a synchronous IO async via Task.Run and wraps the result in an IO
+		/// Returns an IO that contains the specified value
 		/// </summary>
-		/// <param name="unsafeIO"></param>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="value"></param>
 		/// <returns></returns>
-		public static IO<T> Run<T>(Func<T> unsafeIO) => From(() => Task.Run(unsafeIO));
-
-		/// <summary>
-		/// Runs a synchronous action via Task.Run that returns a void
-		/// </summary>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		public static IO<Unit> Run(Action action) => Run(() => {
-			action();
-			return Unit.Default;
-		});
-
-		/// <summary>
-		/// Runs a synchronous action via Task.Run that returns a void
-		/// </summary>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		public static IO<Unit> From(Func<Task> action) => From(async () => {
-			await action();
-			return Unit.Default;
-		});
+		public static IO<T> Return<T>(T value) => IO<T>.From(Observable.Return(value));
 	}
 
 	/// <summary>

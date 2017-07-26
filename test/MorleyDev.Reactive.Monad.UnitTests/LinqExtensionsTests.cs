@@ -19,21 +19,21 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await io.Where(v => v == 1000.0)).Should().Be(1000.0);
 			(await io.Where(v => v != 1000.0).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => Maybe.Just(v * 10))).Should().Be(10000);
-			(await io.SelectMany(v => MaybeIO.From(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
+			(await io.SelectMany(v => MaybeIO.Defer(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
 			(await io.SelectMany(v => IO.From(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
 			(await io.SelectMany(v => (Maybe<int>)Maybe.None).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => IO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
-			(await io.SelectMany(v => MaybeIO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await io.SelectMany(v => MaybeIO.Defer(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable()).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
 		}
 
 		[Fact]
 		public async Task MaybeIOTests()
 		{
-			var some = MaybeIO.From(() => Maybe.Just(10.0))
+			var some = MaybeIO.Defer(() => Maybe.Just(10.0))
 				.Select(v => (int)v * 10)
 				.SelectMany(v => IO.From(() => v * 10.0));
-			var none = MaybeIO.From(() => (Maybe<int>)Maybe.None)
+			var none = MaybeIO.Defer(() => (Maybe<int>)Maybe.None)
 				.Select(v => (decimal)v * 10)
 				.SelectMany(v => IO.From(() => (double)v * 10));
 
@@ -51,8 +51,8 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await some.SelectMany(v => IO.From(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
 			(await some.SelectMany(v => IO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 
-			(await some.SelectMany(v => MaybeIO.From(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
-			(await some.SelectMany(v => MaybeIO.From(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await some.SelectMany(v => MaybeIO.Defer(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
+			(await some.SelectMany(v => MaybeIO.Defer(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 
 			(await some.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
 			(await none.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).IsEmptyIO()).Should().Be(true);

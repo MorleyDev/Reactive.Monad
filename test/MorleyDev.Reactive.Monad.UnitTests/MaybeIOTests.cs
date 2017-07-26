@@ -12,7 +12,7 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 		[Fact]
 		public async Task Basic()
 		{
-			(await MaybeIO.From(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
+			(await MaybeIO.Defer(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
 			(await IO.From(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
 			(await IO.From(() => 10).ToMaybeIO()).Should().Be(10);
 			(await Observable.Return(10).ToMaybeIO()).Should().Be(10);

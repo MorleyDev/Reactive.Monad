@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace MorleyDev.Reactive.Monad
 		public static Maybe<Unit> Just() => Maybe<Unit>.Just(Unit.Default);
 		
 		public static MaybeNone None { get; } = MaybeNone.Default;
+
+		public static Maybe<T> Defer<T>(Func<Maybe<T>> evaluator) => LazyValue<Maybe<T>>.From(evaluator);
 	}
 
 	public class MaybeNone
@@ -58,6 +61,21 @@ namespace MorleyDev.Reactive.Monad
 		public static Maybe<T> Or(Maybe<T> lhs, Maybe<T> rhs) => new Maybe<T>(lhs.Concat(rhs).Take(1));
 
 		public static Maybe<T> From(IEnumerable<T> self) => new Maybe<T>(self);
+
+		public LazyValue<U> Match<U>(Func<T, U> some, Func<U> none)
+		{
+			return LazyValue<U>.From(MatchInner(some, none).First);
+		}
+
+		private IEnumerable<U> MatchInner<U>(Func<T, U> some, Func<U> none)
+		{
+			foreach (var value in _value)
+			{
+				yield return some(value);
+				yield break;
+			}
+			yield return none();
+		}
 
 		private Maybe(IEnumerable<T> value)
 		{

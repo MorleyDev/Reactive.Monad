@@ -30,9 +30,9 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			Maybe<int>.None.Or(LazyValue<int>.From(() => 20)).Single().Should().Be(20);
 			Maybe<int>.Just(10).Or(LazyValue<int>.From(() => throw new Exception())).Single().Should().Be(10);
 
-			(await Maybe<int>.Just(10).Or(MaybeIO.From(() => Observable.Return(20)))).Should().Be(10);
-			(await Maybe<int>.Just(10).Or(MaybeIO.From(() => Observable.Throw<int>(new Exception())))).Should().Be(10);
-			(await Maybe<int>.None.Or(MaybeIO.From(() => Observable.Return(20)))).Should().Be(20);
+			(await Maybe<int>.Just(10).Or(MaybeIO.Defer(() => Observable.Return(20)))).Should().Be(10);
+			(await Maybe<int>.Just(10).Or(MaybeIO.Defer(() => Observable.Throw<int>(new Exception())))).Should().Be(10);
+			(await Maybe<int>.None.Or(MaybeIO.Defer(() => Observable.Return(20)))).Should().Be(20);
 
 			(await Maybe<int>.None.Or(IO.Run(() => 10))).Should().Be(10);
 			(await Maybe<int>.Just(10).Or(IO.Run(() => 20))).Should().Be(10);

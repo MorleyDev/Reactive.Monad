@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using MorleyDev.Reactive.Monad.Extensions;
 using System.Reactive;
 
 namespace MorleyDev.Reactive.Monad
 {
 	public static class MaybeIO
 	{
-		public static MaybeIO<T> From<T>(Func<IObservable<T>> self) => Observable.Defer(self).Select(Maybe.Just).DefaultIfEmpty(Maybe.None).ToIO();
+		public static MaybeIO<T> Defer<T>(Func<IObservable<T>> self) => IO.Defer(() => self().Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
-		public static MaybeIO<T> From<T>(IObservable<T> self) => self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None).ToIO();
+		public static MaybeIO<T> Defer<T>(Func<Task<Maybe<T>>> self) => IO.Defer(self);
 
-		public static MaybeIO<T> From<T>(IObservable<Maybe<T>> self) => self.ToIO();
+		public static MaybeIO<T> From<T>(IObservable<T> self) => IO.From(self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
-		public static MaybeIO<T> From<T>(Func<Maybe<T>> self) => IO.From(self);
+		public static MaybeIO<T> Run<T>(Func<Maybe<T>> self) => IO.Run(self);
 
-		public static MaybeIO<Unit> From<T>(Func<MaybeNone> self) => IO.From(() => (Maybe<Unit>)self());
-
-		public static MaybeIO<T> From<T>(Func<Task<Maybe<T>>> self) => IO.From(self);
-
+		public static MaybeIO<Unit> Run<T>(Func<MaybeNone> self) => Run(() => (Maybe<Unit>)self());
 	}
 
 	/// <summary>
@@ -62,31 +58,40 @@ namespace MorleyDev.Reactive.Monad
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(MaybeIO<T> lhs, MaybeIO<T> rhs) => lhs.Concat(rhs).Take(1).ToMaybeIO();
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, MaybeIO<T> rhs) => IO.From(lhs.Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(MaybeIO<T> lhs, Maybe<T> rhs) => lhs.Concat(rhs.ToObservable()).Take(1).ToMaybeIO();
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, Maybe<T> rhs) => IO.From(lhs.Concat(rhs.ToObservable()).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(Maybe<T> lhs, MaybeIO<T> rhs) => lhs.ToObservable().Concat(rhs).Take(1).ToMaybeIO();
+		public static MaybeIO<T> Or(Maybe<T> lhs, MaybeIO<T> rhs) => IO.From(lhs.ToObservable().Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(Maybe<T> lhs, IO<T> rhs) => lhs.ToObservable().Concat(rhs).Take(1).ToMaybeIO();
+		public static MaybeIO<T> Or(Maybe<T> lhs, IO<T> rhs) => IO.From(lhs.ToObservable().Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(MaybeIO<T> lhs, IO<T> rhs) => lhs.Concat(rhs).Take(1).ToMaybeIO();
+		public static MaybeIO<T> Or(MaybeIO<T> lhs, IO<T> rhs) => IO.From(lhs.Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
+
+		public IO<U> Match<U>(Func<T, U> some, Func<U> none)
+			=> IO.From(
+				_unsafeIO.AsObservable()
+					.SelectMany(maybe => maybe)
+					.Select(some)
+					.Concat(IO.Run(none))
+					.Take(1)
+			);
 	}
 }
