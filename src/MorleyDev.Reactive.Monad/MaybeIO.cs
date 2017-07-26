@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Reactive;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MorleyDev.Reactive.Monad
 {
 	public static class MaybeIO
 	{
+		public static MaybeIO<T> Just<T>(T self) => IO.Return(Maybe.Just(self));
+
+		public static IO<MaybeNone> None => IO.Return(Maybe.None);
+
 		public static MaybeIO<T> Defer<T>(Func<IObservable<T>> self) => IO.Defer(() => self().Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
 		public static MaybeIO<T> Defer<T>(Func<Task<Maybe<T>>> self) => IO.Defer(self);
 
 		public static MaybeIO<T> From<T>(IObservable<T> self) => IO.From(self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
 
+		public static MaybeIO<T> From<T>(IEnumerable<T> self) => IO.Run(self.Select(Maybe.Just).DefaultIfEmpty(Maybe.None).Single);
+
 		public static MaybeIO<T> Run<T>(Func<Maybe<T>> self) => IO.Run(self);
 
-		public static MaybeIO<Unit> Run<T>(Func<MaybeNone> self) => Run(() => (Maybe<Unit>)self());
+		public static IO<MaybeNone> Run(Func<MaybeNone> self) => IO.Run(self);
 	}
 
 	/// <summary>
@@ -44,6 +51,12 @@ namespace MorleyDev.Reactive.Monad
 		/// </summary>
 		/// <param name="self"></param>
 		public static implicit operator MaybeIO<T>(IO<Maybe<T>> self) => new MaybeIO<T>(self);
+
+		/// <summary>
+		/// MaybeIO is equivalent to IO<Maybe>.Merge() and Vice-Versa
+		/// </summary>
+		/// <param name="self"></param>
+		public static implicit operator MaybeIO<T>(IO<MaybeNone> self) => new MaybeIO<T>(IO.Return<Maybe<T>>(Maybe.None));
 
 		public static MaybeIO<T> From(IO<Maybe<T>> unsafeIO) => new MaybeIO<T>(unsafeIO);
 
