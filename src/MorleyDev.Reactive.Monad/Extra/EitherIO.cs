@@ -57,8 +57,8 @@ namespace MorleyDev.Reactive.Monad.Extra
 					.SelectMany(either => IO<Either<UL, UR>>.From(either
 						.MatchMap(lhs, rhs)
 						.Match(
-							lhs2 => lhs2.Select(v => Either<UL, UR>.MakeLeft(Maybe.Just(v))), 
-							rhs2 => rhs2.Select(v => Either<UL,UR>.MakeRight(Maybe.Just(v)))
+							lhs2 => lhs2.Select(v => Either<UL, UR>.Left(Maybe.Just(v))), 
+							rhs2 => rhs2.Select(v => Either<UL,UR>.Right(Maybe.Just(v)))
 						)
 						.ToObservable()
 						.SelectMany(v => v)

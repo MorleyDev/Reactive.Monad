@@ -12,15 +12,15 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 		[Fact]
 		public async Task Basic()
 		{
-			(await MaybeIO.Defer(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
-			(await IO.From(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
-			(await IO.From(() => 10).ToMaybeIO()).Should().Be(10);
+			(await MaybeIO.Run(() => Maybe.Just(10))).Should().Be(10);
+			(await IO.Run(() => Maybe.Just(10)).ToMaybeIO()).Should().Be(10);
+			(await IO.Run(() => 10)).Should().Be(10);
 			(await Observable.Return(10).ToMaybeIO()).Should().Be(10);
 			(await MaybeIO.From(Observable.Return(10))).Should().Be(10);
 
 			(await Observable.Empty<int>().ToMaybeIO().IsEmpty()).Should().Be(true);
-			(await MaybeIO.From<int>(() => Maybe.None).IsEmpty()).Should().Be(true);
-			(await IO.From(() => (Maybe<int>)Maybe.None).ToMaybeIO().IsEmpty()).Should().Be(true);
+			(await MaybeIO.Run<int>(() => Maybe.None).IsEmpty()).Should().Be(true);
+			(await IO.Run(() => (Maybe<int>)Maybe.None).ToMaybeIO().IsEmpty()).Should().Be(true);
 			(await MaybeIO.From(Observable.Empty<int>()).IsEmpty()).Should().Be(true);
 
 

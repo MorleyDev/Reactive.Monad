@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reactive.Linq;
 using Xunit;
+using MorleyDev.Reactive.Monad.Extra;
 
 namespace MorleyDev.Reactive.Monad.UnitTests
 {
