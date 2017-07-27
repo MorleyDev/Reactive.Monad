@@ -89,14 +89,13 @@ namespace MorleyDev.Reactive.Monad
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(Maybe<T> lhs, IO<T> rhs) => IO.From(lhs.ToObservable().Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
-
+		public static IO<T> Or(Maybe<T> lhs, IO<T> rhs) => IO.From(lhs.ToObservable().Concat(rhs).Take(1));
 
 		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
 		/// <param name="lhs"></param>
 		/// <param name="rhs"></param>
 		/// <returns></returns>
-		public static MaybeIO<T> Or(MaybeIO<T> lhs, IO<T> rhs) => IO.From(lhs.Concat(rhs).Take(1).Select(Maybe.Just).DefaultIfEmpty(Maybe.None));
+		public static IO<T> Or(MaybeIO<T> lhs, IO<T> rhs) => IO.From(lhs.Concat(rhs).Take(1));
 
 		public IO<U> Match<U>(Func<T, U> some, Func<U> none)
 			=> IO.From(

@@ -60,12 +60,25 @@ namespace MorleyDev.Reactive.Monad
 		/// <returns></returns>
 		public static Maybe<T> Or(Maybe<T> lhs, Maybe<T> rhs) => new Maybe<T>(lhs.Concat(rhs).Take(1));
 
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static LazyValue<T> Or(Maybe<T> lhs, T rhs) => LazyValue.Defer(lhs.Concat(new[] { rhs }).Take(1).Single);
+
+		/// <summary>Retrieve the option on the left if it has a value, the otherwise the option on the right (None if both are empty)</summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <returns></returns>
+		public static LazyValue<T> Or(Maybe<T> lhs, LazyValue<T> rhs) => LazyValue.Defer(lhs.Concat(rhs).Take(1).Single);
+
+		/// <summary></summary>
+		/// <param name="self"></param>
+		/// <returns></returns>
 		public static Maybe<T> From(IEnumerable<T> self) => new Maybe<T>(self);
 
 		public LazyValue<U> Match<U>(Func<T, U> some, Func<U> none)
-		{
-			return LazyValue<U>.From(MatchInner(some, none).First);
-		}
+			=> LazyValue<U>.From(MatchInner(some, none).First);
 
 		private IEnumerable<U> MatchInner<U>(Func<T, U> some, Func<U> none)
 		{

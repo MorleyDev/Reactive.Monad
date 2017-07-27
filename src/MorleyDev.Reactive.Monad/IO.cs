@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -42,6 +43,13 @@ namespace MorleyDev.Reactive.Monad
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>
 		public static IO<T> From<T>(IObservable<T> unsafeIO) => IO<T>.From(unsafeIO);
+
+		/// <summary>
+		/// Wraps an Asynchronous observable into an asynchronous IO
+		/// </summary>
+		/// <param name="unsafeIO"></param>
+		/// <returns></returns>
+		public static IO<T> From<T>(IEnumerable<T> unsafeIO) => IO<T>.From(unsafeIO.ToObservable());
 
 		/// <summary>
 		/// Returns an IO that contains the specified value
