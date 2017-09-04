@@ -161,7 +161,7 @@ namespace System.Reactive.Linq
 		public static IO<TSource> AggregateIO<TSource>(this IObservable<TSource> self, Func<TSource, TSource, TSource> reducer)
 			=> self.Aggregate(reducer).SingleIO();
 
-		public static IO<TAccumulate> AggregateLazy<TSource, TAccumulate>(this IObservable<TSource> self, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> reducer)
+		public static IO<TAccumulate> AggregateIO<TSource, TAccumulate>(this IObservable<TSource> self, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> reducer)
 			=> self.Aggregate(seed, reducer).SingleIO();
 	}
 }
