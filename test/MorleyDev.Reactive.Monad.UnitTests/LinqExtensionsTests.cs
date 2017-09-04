@@ -10,30 +10,30 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 		[Fact]
 		public async Task IOTests()
 		{
-			var io = IO.Run(() => 10)
+			var io = MonadicAsync.Run(() => 10)
 				.Select(v => v * 10.0)
-				.SelectMany(v => IO.Run(() => v * 10));
+				.SelectMany(v => MonadicAsync.Run(() => v * 10));
 
 			(await io.IsEmpty()).Should().Be(false);
 			(await io).Should().Be(1000.0);
 			(await io.Where(v => v == 1000.0)).Should().Be(1000.0);
 			(await io.Where(v => v != 1000.0).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => Maybe.Just(v * 10))).Should().Be(10000);
-			(await io.SelectMany(v => MaybeIO.Run(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
-			(await io.SelectMany(v => IO.Run(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
+			(await io.SelectMany(v => MonadicAsync.Run(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
+			(await io.SelectMany(v => MonadicAsync.Run(() => Maybe.Just((int)(v * 10))))).Should().Be(10000);
 			(await io.SelectMany(v => (Maybe<int>)Maybe.None).IsEmpty()).Should().Be(true);
-			(await io.SelectMany(v => IO.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
-			(await io.SelectMany(v => MaybeIO.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await io.SelectMany(v => MonadicAsync.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await io.SelectMany(v => MonadicAsync.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 			(await io.SelectMany(v => new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable()).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
 		}
 
 		[Fact]
 		public async Task MaybeIOTests()
 		{
-			var some = MaybeIO.Run(() => Maybe.Just(10.0))
+			var some = MonadicAsync.Run(() => Maybe.Just(10.0))
 				.Select(v => (int)v * 10)
 				.SelectMany(v => IO.Run(() => v * 10.0));
-			var none = MaybeIO.Run(() => (Maybe<int>)Maybe.None)
+			var none = MonadicAsync.Run(() => (Maybe<int>)Maybe.None)
 				.Select(v => (decimal)v * 10)
 				.SelectMany(v => IO.Run(() => (double)v * 10));
 
@@ -48,11 +48,11 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 			(await some.SelectMany(v => LazyValue.Return(v * 2))).Should().Be(2000);
 			(await none.SelectMany(v => LazyValue.Return(v * 2)).IsEmpty()).Should().Be(true);
 
-			(await some.SelectMany(v => IO.Run(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
-			(await some.SelectMany(v => IO.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await some.SelectMany(v => MonadicAsync.Run(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
+			(await some.SelectMany(v => MonadicAsync.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 
-			(await some.SelectMany(v => MaybeIO.Run(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
-			(await some.SelectMany(v => MaybeIO.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
+			(await some.SelectMany(v => MonadicAsync.Run(() => Maybe.Just((int)(v * 2.5))))).Should().Be(2500);
+			(await some.SelectMany(v => MonadicAsync.Run(() => (Maybe<int>)Maybe.None)).IsEmpty()).Should().Be(true);
 
 			(await some.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).ToListIO()).Should().BeEquivalentTo(new[] { 1000, 2000, 3000 });
 			(await none.SelectMany(v => (new[] { (int)v * 1, (int)v * 2, (int)v * 3 }.ToObservable())).IsEmptyIO()).Should().Be(true);

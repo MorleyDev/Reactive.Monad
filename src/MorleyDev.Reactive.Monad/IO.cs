@@ -17,7 +17,7 @@ namespace MorleyDev.Reactive.Monad
 		public static IO<T> Defer<T>(Func<Task<T>> unsafeIO) => IO<T>.From(Observable.Defer(() => unsafeIO().ToObservable()));
 
 		/// <summary>
-		/// Wraps an Asynchronous observable into an asynchronous IO
+		/// Wraps an Asynchronous observable into an asynchronous IO (will error if unsafeIO returns more or less than 1 result)
 		/// </summary>
 		/// <param name="unsafeIO"></param>
 		/// <returns></returns>

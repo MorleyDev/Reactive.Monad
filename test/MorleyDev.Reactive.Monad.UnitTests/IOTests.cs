@@ -12,11 +12,11 @@ namespace MorleyDev.Reactive.Monad.UnitTests
 		[Fact]
 		public async Task Basic()
 		{
-			(await IO.Run(() => 10).RunUnsafeIO()).Should().Be(10);
-			(await IO.Defer(() => Task.FromResult(10)).RunUnsafeIO()).Should().Be(10);
-			(await IO.Run(() => 10).RunUnsafeIO()).Should().Be(10);
-			(await IO.Run(() => 10).Select(m => m * 10)).Should().Be(100);
-			(await Observable.Return(10).ToIO()).Should().Be(10);
+			(await MonadicAsync.Run(() => 10).RunUnsafeIO()).Should().Be(10);
+			(await MonadicAsync.Defer(() => Task.FromResult(10)).RunUnsafeIO()).Should().Be(10);
+			(await MonadicAsync.Run(() => 10).RunUnsafeIO()).Should().Be(10);
+			(await MonadicAsync.Run(() => 10).Select(m => m * 10)).Should().Be(100);
+			(await MonadicAsync.Return(10)).Should().Be(10);
 		}
 	}
 }

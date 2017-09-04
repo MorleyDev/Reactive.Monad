@@ -5,8 +5,26 @@ using System.Reactive.Threading.Tasks;
 
 namespace System.Linq
 {
-	public static class Monad
+	public static class Monadic
 	{
+        public static LazyValue<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> functor)
+            where TDisposable : IDisposable => Defer(() =>
+            {
+                using (var disposable = factory())
+                    return functor(disposable);
+            });
+
+        public static Maybe<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Maybe<T>> functor)
+            where TDisposable : IDisposable => Defer(() =>
+            {
+                using (var disposable = factory())
+                    return functor(disposable);
+            });
+
+        public static LazyValue<T> Return<T>(T value) => LazyValue.Return(value);
+		public static LazyValue<T> Defer<T>(Func<T> value) => LazyValue.Defer(value);
+		public static Maybe<T> Defer<T>(Func<Maybe<T>> value) => Maybe.Defer(value);
+
 		public static Maybe<U> Select<U, T>(this Maybe<T> self, Func<T, U> mapper) => Maybe<U>.From(self.AsEnumerable().Select(mapper));
 		public static Maybe<T> Where<T>(this Maybe<T> self, Func<T, bool> predicate) => Maybe<T>.From(self.AsEnumerable().Where(predicate));
 		public static Maybe<U> SelectMany<U, T>(this Maybe<T> self, Func<T, LazyValue<U>> mapper) => Maybe<U>.From(self.AsEnumerable().SelectMany(mapper));
@@ -21,12 +39,17 @@ namespace System.Linq
 
 		public static LazyValue<T> SingleLazy<T>(this IEnumerable<T> self) => LazyValue<T>.From(self.Single);
 		public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> self) => Maybe<T>.From(self.Take(1));
+
+		public static LazyValue<TSource> AggregateLazy<TSource>(this IEnumerable<TSource> self, Func<TSource, TSource, TSource> reducer)
+			=> Defer(() => self.Aggregate(reducer));
+		public static LazyValue<TAccumulate> AggregateLazy<TSource, TAccumulate>(this IEnumerable<TSource> self, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> reducer)
+			=> Defer(() => self.Aggregate(seed, reducer));
 	}
 }
 
 namespace System.Reactive.Linq
 {
-	public static class Monad
+	public static class MonadicAsync
 	{
 		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> method)
 			where TDisposable : IDisposable
@@ -51,6 +74,22 @@ namespace System.Reactive.Linq
 		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Task<Maybe<T>>> method)
 			where TDisposable : IDisposable
 			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => method(disposable).ToObservable()));
+
+		public static IObservable<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, IObservable<T>> method)
+			where TDisposable : IDisposable
+			=> (Observable.Using(factory, disposable => method(disposable)));
+
+		public static IO<T> Return<T>(T value) => MorleyDev.Reactive.Monad.IO.Return(value);
+		public static MaybeIO<T> Return<T>(Maybe<T> value) => MorleyDev.Reactive.Monad.IO.Return(value);
+		public static IO<T> Run<T>(Func<T> value) => MorleyDev.Reactive.Monad.IO.Run(value);
+		public static IO<T> Defer<T>(Func<Task<T>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
+		public static MaybeIO<T> Run<T>(Func<Maybe<T>> value) => MorleyDev.Reactive.Monad.IO.Run(value);
+		public static MaybeIO<T> Defer<T>(Func<Task<Maybe<T>>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
+		public static MaybeIO<T> Defer<T>(Func<IO<Maybe<T>>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
+
+		public static IO<T> Defer<T>(Func<IO<T>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
+		public static MaybeIO<T> Defer<T>(Func<MaybeIO<T>> value) => MorleyDev.Reactive.Monad.MaybeIO.Defer(value);
+		public static IObservable<T> Defer<T>(Func<IObservable<T>> value) => Observable.Defer(value);
 
 		public static IO<U> Select<U, T>(this IO<T> self, Func<T, U> mapper) => IO<U>.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this IO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
@@ -113,5 +152,11 @@ namespace System.Reactive.Linq
 		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
 		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
 		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		
+		public static IO<TSource> AggregateIO<TSource>(this IObservable<TSource> self, Func<TSource, TSource, TSource> reducer)
+			=> self.Aggregate(reducer).SingleIO();
+
+		public static IO<TAccumulate> AggregateLazy<TSource, TAccumulate>(this IObservable<TSource> self, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> reducer)
+			=> self.Aggregate(seed, reducer).SingleIO();
 	}
 }
