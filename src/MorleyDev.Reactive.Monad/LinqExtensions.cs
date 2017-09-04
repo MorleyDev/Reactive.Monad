@@ -1,5 +1,7 @@
 ﻿using MorleyDev.Reactive.Monad;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Reactive.Threading.Tasks;
 
 namespace System.Linq
 {
@@ -26,6 +28,30 @@ namespace System.Reactive.Linq
 {
 	public static class Monad
 	{
+		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => Observable.Return(method(disposable))));
+			
+		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, IO<T>> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => method(disposable)));
+
+		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Task<T>> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => method(disposable).ToObservable()));
+
+		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Maybe<T>> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => Observable.Return(method(disposable))));
+			
+		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, MaybeIO<T>> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.MaybeIO.From(Observable.Using(factory, disposable => method(disposable)));
+
+		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Task<Maybe<T>>> method)
+			where TDisposable : IDisposable
+			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => method(disposable).ToObservable()));
+
 		public static IO<U> Select<U, T>(this IO<T> self, Func<T, U> mapper) => IO<U>.From(self.AsObservable().Select(mapper));
 		public static MaybeIO<T> Where<T>(this IO<T> self, Func<T, bool> predicate) => MaybeIO.From(self.AsObservable().Where(predicate));
 		public static IO<U> SelectMany<U, T>(this IO<T> self, Func<T, IO<U>> mapper) => IO<U>.From(self.AsObservable().SelectMany(mapper));
