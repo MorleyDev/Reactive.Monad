@@ -23,6 +23,7 @@ namespace System.Linq
 
         public static LazyValue<T> Return<T>(T value) => LazyValue.Return(value);
 		public static LazyValue<T> Defer<T>(Func<T> value) => LazyValue.Defer(value);
+		public static LazyValue<System.Reactive.Unit> Defer<T>(Action value) => LazyValue.Defer(() => { value(); return System.Reactive.Unit.Default; });
 		public static Maybe<T> Defer<T>(Func<Maybe<T>> value) => Maybe.Defer(value);
 
 		public static Maybe<U> Select<U, T>(this Maybe<T> self, Func<T, U> mapper) => Maybe<U>.From(self.AsEnumerable().Select(mapper));
@@ -82,7 +83,9 @@ namespace System.Reactive.Linq
 		public static IO<T> Return<T>(T value) => MorleyDev.Reactive.Monad.IO.Return(value);
 		public static MaybeIO<T> Return<T>(Maybe<T> value) => MorleyDev.Reactive.Monad.IO.Return(value);
 		public static IO<T> Run<T>(Func<T> value) => MorleyDev.Reactive.Monad.IO.Run(value);
+		public static IO<Unit> Run(Action value) => MorleyDev.Reactive.Monad.IO.Run(value);
 		public static IO<T> Defer<T>(Func<Task<T>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
+		public static IO<Unit> Defer(Func<Task> value) => MorleyDev.Reactive.Monad.IO.Defer(async () => { await value(); return Unit.Default; });
 		public static MaybeIO<T> Run<T>(Func<Maybe<T>> value) => MorleyDev.Reactive.Monad.IO.Run(value);
 		public static MaybeIO<T> Defer<T>(Func<Task<Maybe<T>>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
 		public static MaybeIO<T> Defer<T>(Func<IO<Maybe<T>>> value) => MorleyDev.Reactive.Monad.IO.Defer(value);
