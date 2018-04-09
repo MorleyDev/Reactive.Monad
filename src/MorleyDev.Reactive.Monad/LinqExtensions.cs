@@ -7,21 +7,21 @@ namespace System.Linq
 {
 	public static class Monadic
 	{
-        public static LazyValue<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> functor)
-            where TDisposable : IDisposable => Defer(() =>
-            {
-                using (var disposable = factory())
-                    return functor(disposable);
-            });
+		public static LazyValue<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> functor)
+			where TDisposable : IDisposable => Defer(() =>
+			{
+				using (var disposable = factory())
+					return functor(disposable);
+			});
 
-        public static Maybe<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Maybe<T>> functor)
-            where TDisposable : IDisposable => Defer(() =>
-            {
-                using (var disposable = factory())
-                    return functor(disposable);
-            });
+		public static Maybe<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Maybe<T>> functor)
+			where TDisposable : IDisposable => Defer(() =>
+			{
+				using (var disposable = factory())
+					return functor(disposable);
+			});
 
-        public static LazyValue<T> Return<T>(T value) => LazyValue.Return(value);
+		public static LazyValue<T> Return<T>(T value) => LazyValue.Return(value);
 		public static LazyValue<T> Defer<T>(Func<T> value) => LazyValue.Defer(value);
 		public static LazyValue<System.Reactive.Unit> Defer<T>(Action value) => LazyValue.Defer(() => { value(); return System.Reactive.Unit.Default; });
 		public static Maybe<T> Defer<T>(Func<Maybe<T>> value) => Maybe.Defer(value);
@@ -55,7 +55,7 @@ namespace System.Reactive.Linq
 		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, T> method)
 			where TDisposable : IDisposable
 			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => Observable.Return(method(disposable))));
-			
+
 		public static IO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, IO<T>> method)
 			where TDisposable : IDisposable
 			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => method(disposable)));
@@ -67,7 +67,7 @@ namespace System.Reactive.Linq
 		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, Maybe<T>> method)
 			where TDisposable : IDisposable
 			=> MorleyDev.Reactive.Monad.IO.From(Observable.Using(factory, disposable => Observable.Return(method(disposable))));
-			
+
 		public static MaybeIO<T> Using<T, TDisposable>(Func<TDisposable> factory, Func<TDisposable, MaybeIO<T>> method)
 			where TDisposable : IDisposable
 			=> MorleyDev.Reactive.Monad.MaybeIO.From(Observable.Using(factory, disposable => method(disposable)));
@@ -154,14 +154,14 @@ namespace System.Reactive.Linq
 		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> Zip<U, T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().Zip(rhs.AsObservable(), mapper));
 
-		public static IO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l,r) => (l,r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IObservable<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> Zip<T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static IO<(T1, T2)> Zip<T1, T2>(this IO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this IO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this MaybeIO<T1> lhs, IObservable<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this IObservable<T1> lhs, IO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> Zip<T1, T2>(this IObservable<T1> lhs, MaybeIO<T2> rhs) => Zip(lhs, rhs, (l, r) => (l, r));
 
 		public static IO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, IO<T2> rhs, Func<T1, T2, U> mapper) => MorleyDev.Reactive.Monad.IO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 		public static MaybeIO<U> CombineLatest<U, T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
@@ -169,10 +169,10 @@ namespace System.Reactive.Linq
 		public static MaybeIO<U> CombineLatest<U, T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs, Func<T1, T2, U> mapper) => MaybeIO.From(lhs.AsObservable().CombineLatest(rhs.AsObservable(), mapper));
 
 		public static IO<(T1, T2)> CombineLatest<T1, T2>(this IO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
-		public static MaybeIO<(T1,T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
-		
+		public static MaybeIO<(T1, T2)> CombineLatest<T1, T2>(this IO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, IO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+		public static MaybeIO<(T1, T2)> CombineLatest<T1, T2>(this MaybeIO<T1> lhs, MaybeIO<T2> rhs) => CombineLatest(lhs, rhs, (l, r) => (l, r));
+
 		public static IO<TSource> AggregateIO<TSource>(this IObservable<TSource> self, Func<TSource, TSource, TSource> reducer)
 			=> MorleyDev.Reactive.Monad.IO.From(self.Aggregate(reducer));
 
